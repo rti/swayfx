@@ -1003,15 +1003,17 @@ static void render_containers_linear(struct sway_output *output,
 			}
 
 			bool has_titlebar = state->border == B_NORMAL;
+			int corner_radius = config->smart_corner_radius &&
+					output->current.active_workspace->current_gaps.top == 0
+					? 0 : child->corner_radius;
 			struct decoration_data deco_data = {
 				.alpha = child->alpha,
 				.dim_color = view_is_urgent(view)
 								 ? config->dim_inactive_colors.urgent
 								 : config->dim_inactive_colors.unfocused,
-				.dim = child->current.focused ? 0.0f: config->dim_inactive,
+				.dim = child->current.focused || parent->focused ? 0.0f: config->dim_inactive,
 				// no corner radius if no gaps (allows smart_gaps to work as expected)
-				.corner_radius = output->current.active_workspace->current_gaps.top == 0
-					? 0 : child->corner_radius,
+				.corner_radius = corner_radius,
 				.saturation = child->saturation,
 				.has_titlebar = has_titlebar,
 			};
